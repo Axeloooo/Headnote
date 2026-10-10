@@ -20,6 +20,7 @@
 }
 
 .excerpt p {
+  white-space: pre-line;
   margin-bottom: 2px;
 }
 

@@ -1,14 +1,20 @@
 import { useEffect, useState } from "react";
-import type { Route } from "./components/Sidebar";
 
-const routes: Route[] = ["chat", "library", "empty"];
+export type RouteName = "chat" | "library";
 
-function read(): Route {
-  const name = window.location.hash.replace(/^#\//, "");
-  return routes.find((route) => route === name) ?? "chat";
+export interface Route {
+  name: RouteName;
+  /** Saved conversation to open, from `#/chat/<id>`. */
+  conversationId?: string;
 }
 
-/** Hash routing keeps the template free of a router dependency. */
+function read(): Route {
+  const [name, id] = window.location.hash.replace(/^#\//, "").split("/");
+  if (name === "library") return { name: "library" };
+  return { name: "chat", conversationId: /^\d+$/.test(id ?? "") ? id : undefined };
+}
+
+/** Hash routing keeps the app free of a router dependency and works on any static host. */
 export function useRoute(): Route {
   const [route, setRoute] = useState<Route>(read);
   useEffect(() => {

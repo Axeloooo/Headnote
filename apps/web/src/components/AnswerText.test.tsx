@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { mockAnswer } from "../data/mock";
+import { mockAnswer } from "../test/mockData";
 import { AnswerText } from "./AnswerText";
 
 describe("AnswerText", () => {

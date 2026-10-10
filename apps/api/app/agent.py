@@ -6,7 +6,7 @@ from langgraph.graph import END, START, StateGraph
 from langgraph.graph.message import add_messages
 from langgraph.graph.state import CompiledStateGraph
 
-from app.rag import Retriever
+from app.rag import Hit, Retriever
 
 SYSTEM_PROMPT = "You are Headnote, a concise and helpful assistant."
 
@@ -14,6 +14,7 @@ SYSTEM_PROMPT = "You are Headnote, a concise and helpful assistant."
 class AgentState(TypedDict):
     messages: Annotated[list[AnyMessage], add_messages]
     context: list[str]
+    hits: list[Hit]
 
 
 def build_agent(llm: BaseChatModel, retriever: Retriever) -> CompiledStateGraph[Any, Any, Any, Any]:
@@ -21,7 +22,8 @@ def build_agent(llm: BaseChatModel, retriever: Retriever) -> CompiledStateGraph[
 
     def retrieve(state: AgentState) -> dict[str, Any]:
         query = str(state["messages"][-1].content)
-        return {"context": retriever.search(query)}
+        hits = retriever.search_hits(query)
+        return {"context": [hit.text for hit in hits], "hits": hits}
 
     def respond(state: AgentState) -> dict[str, Any]:
         system = SYSTEM_PROMPT
