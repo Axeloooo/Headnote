@@ -23,6 +23,7 @@ from app.schemas import (
     NewDocument,
     SourceOut,
 )
+from app.seed import seed_library
 
 HISTORY_LIMIT = 20
 RECENT_LIMIT = 8
@@ -34,7 +35,8 @@ def create_app(settings: Settings | None = None, retriever: Retriever | None = N
     connect_args = (
         {"check_same_thread": False} if settings.database_url.startswith("sqlite") else {}
     )
-    engine = create_engine(settings.database_url, connect_args=connect_args)
+    # pool_pre_ping replaces connections a serverless Postgres (Neon) closed while it slept.
+    engine = create_engine(settings.database_url, connect_args=connect_args, pool_pre_ping=True)
     Base.metadata.create_all(engine)
 
     if retriever is None:
@@ -55,6 +57,8 @@ def create_app(settings: Settings | None = None, retriever: Retriever | None = N
             allow_headers=["content-type"],
         )
     app.state.session_factory = sessionmaker(bind=engine, expire_on_commit=False)
+    if settings.seed_demo_documents:
+        seed_library(app.state.session_factory, retriever)
     app.state.retriever = retriever
 
     def get_db(request: Request) -> Iterator[Session]:
