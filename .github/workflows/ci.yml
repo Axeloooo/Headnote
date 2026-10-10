@@ -41,3 +41,13 @@ jobs:
         working-directory: apps/web
       - run: npm run build
         working-directory: apps/web
+
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker compose config --quiet
+      - run: docker build -t headnote-api apps/api
+      - run: docker build -t headnote-web apps/web
+      - name: Check the nginx config renders and parses (the template resolves the upstream host at start)
+        run: docker run --rm --add-host api:127.0.0.1 -e API_UPSTREAM=http://api:8000 headnote-web nginx -t
