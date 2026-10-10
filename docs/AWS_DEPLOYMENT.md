@@ -16,7 +16,7 @@ The app ships as a single container (see `apps/api/Dockerfile`), so the simplest
    `DATABASE_URL=postgresql+psycopg://...` (add `psycopg[binary]` to `apps/api/requirements.txt`).
 3. **Vector store.** Chroma runs in-process. For persistence on ECS, mount an EFS volume and set `CHROMA_PATH` to it,
    or move to a hosted vector store later.
-4. **Secrets.** Store `OPENAI_API_KEY` and `LANGSMITH_API_KEY` in AWS Secrets Manager and reference them from the task
+4. **Secrets.** Store `ANTHROPIC_API_KEY` (or `OPENAI_API_KEY`) and `LANGSMITH_API_KEY` in AWS Secrets Manager and reference them from the task
    definition. Do not bake them into the image.
 5. **Service.** Create an ECS service with the task definition, a target group on port 8000, and a health check on
    `/health`.
