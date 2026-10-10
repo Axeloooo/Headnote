@@ -1,4 +1,5 @@
 from functools import lru_cache
+from typing import Literal
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -8,7 +9,15 @@ class Settings(BaseSettings):
 
     database_url: str = "sqlite:///./headnote.db"
 
-    # Leave the OpenAI key empty to run offline with the echo model.
+    # Which chat model to use: "auto", "anthropic", "openai" or "echo". "auto" picks Anthropic when
+    # ANTHROPIC_API_KEY is set, then OpenAI when OPENAI_API_KEY is set, otherwise the offline echo.
+    llm_provider: Literal["auto", "anthropic", "openai", "echo"] = "auto"
+
+    anthropic_api_key: str | None = None
+    # Haiku is the cheap default; set ANTHROPIC_MODEL=claude-sonnet-5-5 for stronger answers.
+    anthropic_model: str = "claude-haiku-5-5"
+
+    # OpenAI also provides the embeddings when its key is set.
     openai_api_key: str | None = None
     openai_model: str = "gpt-4o-mini"
 

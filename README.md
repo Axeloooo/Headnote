@@ -17,13 +17,13 @@ Based on the "Build Your Own ChatGPT Agent" project from YouTube video `Zy7EXDON
 python -m venv .venv && source .venv/bin/activate
 cd apps/api
 pip install -r requirements.txt
-cp .env.example .env            # optional: add OPENAI_API_KEY
+cp .env.example .env            # optional: add ANTHROPIC_API_KEY
 uvicorn app.main:create_app --factory --reload
 ```
 
 Build the container with `docker build -t headnote apps/api`.
 
-Without `OPENAI_API_KEY` the app uses an offline echo model, so everything still runs end to end.
+Set `ANTHROPIC_API_KEY` for Claude answers (default model `claude-haiku-5-5`; set `ANTHROPIC_MODEL=claude-sonnet-5-5` for Sonnet). `OPENAI_API_KEY` still works as an alternative. Without a key the app uses an offline echo model, so everything still runs end to end.
 
 ## API
 
@@ -63,15 +63,18 @@ alternatives are in [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
 docker compose up --build        # http://localhost:8080
 ```
 
-| Variable           | Where      | When       | Purpose                                                              |
-| ------------------ | ---------- | ---------- | -------------------------------------------------------------------- |
-| `VITE_API_URL`     | `apps/web` | build time | API origin for a cross-origin deploy. Empty means same-origin `/api` |
-| `API_UPSTREAM`     | web image  | start      | Where nginx forwards `/api` (default `http://api:8000`)              |
-| `API_PROXY_TARGET` | `apps/web` | dev        | Where `vite` and `vite preview` forward `/api`                       |
-| `CORS_ORIGINS`     | `apps/api` | start      | Comma-separated origins allowed to call the API cross-origin         |
-| `OPENAI_API_KEY`   | `apps/api` | start      | Real model and embeddings. Empty uses the offline echo model         |
-| `DATABASE_URL`     | `apps/api` | start      | SQLAlchemy URL. Default is a local SQLite file                       |
-| `CHROMA_PATH`      | `apps/api` | start      | Directory for the persistent Chroma index. Empty keeps it in memory  |
+| Variable            | Where      | When       | Purpose                                                              |
+| ------------------- | ---------- | ---------- | -------------------------------------------------------------------- |
+| `VITE_API_URL`      | `apps/web` | build time | API origin for a cross-origin deploy. Empty means same-origin `/api` |
+| `API_UPSTREAM`      | web image  | start      | Where nginx forwards `/api` (default `http://api:8000`)              |
+| `API_PROXY_TARGET`  | `apps/web` | dev        | Where `vite` and `vite preview` forward `/api`                       |
+| `CORS_ORIGINS`      | `apps/api` | start      | Comma-separated origins allowed to call the API cross-origin         |
+| `ANTHROPIC_API_KEY` | `apps/api` | start      | Claude chat model. Empty falls back to OpenAI, then the echo model   |
+| `ANTHROPIC_MODEL`   | `apps/api` | start      | Claude model name. Default `claude-haiku-5-5`                        |
+| `LLM_PROVIDER`      | `apps/api` | start      | `auto` (default), `anthropic`, `openai` or `echo`                    |
+| `OPENAI_API_KEY`    | `apps/api` | start      | OpenAI chat model and embeddings. Optional                           |
+| `DATABASE_URL`      | `apps/api` | start      | SQLAlchemy URL. Default is a local SQLite file                       |
+| `CHROMA_PATH`       | `apps/api` | start      | Directory for the persistent Chroma index. Empty keeps it in memory  |
 
 ## Tests
 

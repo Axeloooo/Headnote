@@ -7,13 +7,15 @@ reverse proxy in front of both.
 ## One host with Docker Compose
 
 ```bash
-export OPENAI_API_KEY=...        # optional; without it the API answers with an offline echo model
+export ANTHROPIC_API_KEY=...     # optional; without a provider key the API answers with an offline echo model
+export ANTHROPIC_MODEL=claude-haiku-5-5   # optional; claude-sonnet-5-5 for stronger answers
 docker compose up --build        # web on http://localhost:8080 (set WEB_PORT to change)
 ```
 
 `web` is nginx serving the built UI and forwarding `/api/*` to `api`. The `headnote-data` volume holds the
 SQLite database and the Chroma index (`CHROMA_PATH=/data/chroma`), so documents and conversations survive
-restarts. The first request downloads Chroma's local embedding model unless `OPENAI_API_KEY` is set.
+restarts. The first request downloads Chroma's local embedding model unless `OPENAI_API_KEY` is set (Anthropic has no embeddings API, so the
+local model is used with the Claude chat model).
 
 ## Separate hosts
 
