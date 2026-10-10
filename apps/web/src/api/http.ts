@@ -13,8 +13,9 @@ import type {
  * Where the API lives. The default `/api` is same-origin: the Vite dev server, the nginx image and
  * `vite preview` all forward it to apps/api. Set `VITE_API_URL` at build time (for example
  * `https://api.example.com`) to call an API on another origin; it must allow this origin in CORS.
+ * An empty value (a copied `.env.example`, an unset build arg) also means `/api`.
  */
-export const API_BASE = (import.meta.env.VITE_API_URL ?? "/api").replace(/\/+$/, "");
+export const API_BASE = (import.meta.env.VITE_API_URL || "/api").replace(/\/+$/, "");
 
 interface ChatResponse {
   conversation_id: number;

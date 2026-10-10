@@ -97,3 +97,22 @@ describe("http client", () => {
     await expect(createHttpClient().getWorkspace()).rejects.toThrow("could not be reached");
   });
 });
+
+describe("API_BASE", () => {
+  afterEach(() => {
+    vi.unstubAllEnvs();
+    vi.resetModules();
+  });
+
+  it("falls back to /api when VITE_API_URL is empty", async () => {
+    vi.stubEnv("VITE_API_URL", "");
+    const { API_BASE } = await import("./http");
+    expect(API_BASE).toBe("/api");
+  });
+
+  it("uses VITE_API_URL without a trailing slash", async () => {
+    vi.stubEnv("VITE_API_URL", "https://api.example.com/");
+    const { API_BASE } = await import("./http");
+    expect(API_BASE).toBe("https://api.example.com");
+  });
+});
