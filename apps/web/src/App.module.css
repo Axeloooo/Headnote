@@ -1,0 +1,32 @@
+.shell {
+  display: flex;
+  height: 100%;
+}
+
+.main {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+}
+
+.loading,
+.failed {
+  padding: 28px clamp(16px, 4vw, 48px);
+  color: var(--text-muted);
+}
+
+.failed {
+  color: var(--danger);
+}
+
+@media (max-width: 760px) {
+  .shell {
+    flex-direction: column;
+  }
+
+  .main {
+    height: auto;
+    flex: 1;
+    min-height: 0;
+  }
+}

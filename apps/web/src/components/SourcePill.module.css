@@ -1,0 +1,27 @@
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-inline: 2px;
+  padding: 0 6px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: var(--pill);
+  color: var(--ink);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  line-height: 1.5;
+  vertical-align: baseline;
+}
+
+.pill:hover,
+.pill[aria-expanded="true"] {
+  background: var(--line);
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--marker);
+}

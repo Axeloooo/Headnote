@@ -1,0 +1,36 @@
+/* Headnote design tokens, taken from the C-A spread of the brand directions. */
+:root {
+  /* Palette */
+  --ink: #141414;
+  --marker: #e8a33d;
+  --panel: #f7f7f6;
+  --page: #ffffff;
+  --line: #e6e6e4;
+  --line-soft: #eeeeec;
+  --pill: #f3f3f1;
+  --text: #2a2a28;
+  --text-muted: #8a8a88;
+  --text-faint: #9a9a98;
+  --danger: #b4372e;
+
+  /* Type */
+  --font-ui: "Geist Variable", system-ui, sans-serif;
+  --font-mono: "Geist Mono Variable", ui-monospace, monospace;
+
+  --text-xs: 0.75rem;
+  --text-sm: 0.8125rem;
+  --text-base: 0.84375rem;
+  --text-md: 1rem;
+  --text-lg: 1.0625rem;
+  --text-xl: 1.5rem;
+
+  /* Shape and space */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.04), 0 12px 32px -16px rgb(0 0 0 / 0.12);
+  --sidebar-width: 232px;
+  --measure: 62ch;
+
+  color-scheme: light;
+}

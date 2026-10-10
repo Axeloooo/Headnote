@@ -1,0 +1,31 @@
+.composer {
+  display: flex;
+  gap: 8px;
+  padding: 6px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--page);
+  box-shadow: var(--shadow-card);
+}
+
+.composer:focus-within {
+  border-color: var(--ink);
+}
+
+.input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  padding: 6px 8px;
+  font-size: var(--text-base);
+}
+
+.input:focus-visible {
+  outline: none;
+}
+
+.composer :global(.button):disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}

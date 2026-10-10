@@ -1,0 +1,46 @@
+.answer {
+  display: grid;
+  gap: 14px;
+}
+
+.prose {
+  max-width: var(--measure);
+  line-height: 1.65;
+  color: var(--text);
+  text-wrap: pretty;
+}
+
+.excerpt {
+  margin: 0;
+  max-width: var(--measure);
+  padding: 8px 0 8px 14px;
+  border-left: 2px solid var(--marker);
+  font-size: var(--text-base);
+  color: var(--text);
+}
+
+.excerpt p {
+  margin-bottom: 2px;
+}
+
+.excerpt footer {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+.foot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  align-items: center;
+  padding-top: 12px;
+  border-top: 1px solid var(--line-soft);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+.foot b {
+  font-weight: 500;
+  color: var(--ink);
+}

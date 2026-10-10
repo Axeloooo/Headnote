@@ -1,0 +1,13 @@
+node_modules/
+.venv/
+package-lock.json
+CHANGELOG.md
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Vendored Claude skills, copied verbatim
+.claude/skills/
+
+# Web build output
+apps/web/dist/

@@ -218,3 +218,11 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Node / tooling
+node_modules/
+.pre-commit-cache/
+*.db
+
+# Web
+apps/web/dist/

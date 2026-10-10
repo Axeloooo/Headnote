@@ -1,0 +1,45 @@
+.view {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+.thread {
+  flex: 1;
+  overflow-y: auto;
+  display: grid;
+  align-content: start;
+  gap: 40px;
+  padding: 28px clamp(16px, 4vw, 48px);
+}
+
+.turn {
+  display: grid;
+  gap: 14px;
+  max-width: 720px;
+}
+
+.question {
+  font-size: var(--text-lg);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  text-wrap: balance;
+}
+
+.working {
+  color: var(--text-muted);
+}
+
+.error {
+  max-width: 720px;
+  color: var(--danger);
+  font-size: var(--text-base);
+}
+
+.composer {
+  max-width: 760px;
+  width: 100%;
+  padding: 12px clamp(16px, 4vw, 48px) 20px;
+}

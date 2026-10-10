@@ -1,0 +1,35 @@
+.view {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  padding: 24px 16px;
+}
+
+.card {
+  display: grid;
+  justify-items: start;
+  gap: 14px;
+  max-width: 420px;
+}
+
+.title {
+  font-size: var(--text-xl);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+}
+
+.body {
+  color: var(--text);
+  text-wrap: pretty;
+}
+
+.hint,
+.status {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+.status {
+  color: var(--ink);
+}
