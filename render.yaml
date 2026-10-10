@@ -21,12 +21,11 @@ services:
       # Rebuild the sample library on every start: the free disk is wiped when the service sleeps.
       - key: SEED_DEMO_DOCUMENTS
         value: "true"
-      # Only needed if the web app calls the API directly instead of through the /api rewrite.
-      - key: CORS_ORIGINS
-        value: ""
       - key: LANGSMITH_TRACING
         value: "false"
       - key: LANGSMITH_API_KEY
         sync: false
       - key: LANGSMITH_PROJECT
         value: headnote
+      # CORS_ORIGINS is left out: the web app reaches the API through the /api rewrite. Add it in the
+      # dashboard only if the web app calls Render directly (see docs/DEPLOYMENT.md).
