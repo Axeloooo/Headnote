@@ -43,3 +43,17 @@
   width: 100%;
   padding: 12px clamp(16px, 4vw, 48px) 20px;
 }
+
+.idle {
+  display: grid;
+  gap: 6px;
+  max-width: var(--measure);
+  color: var(--text-muted);
+}
+
+.idleTitle {
+  font-size: var(--text-xl);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+}

@@ -1,10 +1,20 @@
 import { useMemo, useState } from "react";
 import type { Workspace } from "../api/types";
+import { AddDocuments } from "../components/AddDocuments";
 import styles from "./LibraryView.module.css";
+import { LibraryEmpty } from "./LibraryEmpty";
+
+const count = (n: number, noun: string) => `${n} ${noun}${n === 1 ? "" : "s"}`;
 
 const kindLabel = { pdf: "PDF", email: "Email", note: "Note", sheet: "Sheet" } as const;
 
-export function LibraryView({ workspace }: { workspace: Workspace }) {
+export function LibraryView({
+  workspace,
+  onAdded,
+}: {
+  workspace: Workspace;
+  onAdded: () => void | Promise<void>;
+}) {
   const [collectionId, setCollectionId] = useState<string | null>(null);
   const [query, setQuery] = useState("");
 
@@ -12,6 +22,8 @@ export function LibraryView({ workspace }: { workspace: Workspace }) {
     () => new Map(workspace.collections.map((collection) => [collection.id, collection.name])),
     [workspace.collections],
   );
+
+  if (workspace.documents.length === 0) return <LibraryEmpty onAdded={onAdded} />;
 
   const documents = workspace.documents.filter(
     (document) =>
@@ -24,9 +36,12 @@ export function LibraryView({ workspace }: { workspace: Workspace }) {
       <header className={styles.header}>
         <h1 className={styles.title}>Library</h1>
         <p className={styles.sub}>
-          {workspace.documents.length} documents in {workspace.collections.length} collections
+          {count(workspace.documents.length, "document")} in{" "}
+          {count(workspace.collections.length, "collection")}
         </p>
       </header>
+
+      <AddDocuments onAdded={onAdded} />
 
       <div className={styles.tools}>
         <label className="visually-hidden" htmlFor="library-search">

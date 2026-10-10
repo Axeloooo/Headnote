@@ -57,7 +57,10 @@ export const mockWorkspace: Workspace = {
       chunks: 4,
     },
   ],
-  recent: ["termination clause", "Q3 pricing change"],
+  recent: [
+    { id: "1", title: "termination clause" },
+    { id: "2", title: "Q3 pricing change" },
+  ],
 };
 
 export const mockQuestion = "Can we leave the vendor contract early, and what does it cost?";

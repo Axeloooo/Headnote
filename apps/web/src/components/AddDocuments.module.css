@@ -1,0 +1,39 @@
+.add {
+  display: grid;
+  gap: 8px;
+  justify-items: start;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.collection {
+  width: 180px;
+  padding: 7px 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+}
+
+.collection:focus-visible {
+  outline: none;
+  border-color: var(--ink);
+}
+
+.hint,
+.ok {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+.ok {
+  color: var(--ink);
+}
+
+.error {
+  font-size: var(--text-xs);
+  color: var(--danger);
+}

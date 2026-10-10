@@ -40,18 +40,31 @@ export interface DocumentItem {
   chunks: number;
 }
 
+export interface RecentChat {
+  id: string;
+  title: string;
+}
+
 export interface Workspace {
   collections: Collection[];
   documents: DocumentItem[];
-  recent: string[];
+  recent: RecentChat[];
+}
+
+export interface NewDocument {
+  title: string;
+  text: string;
+  collection: string;
+  kind: DocumentItem["kind"];
 }
 
 /**
- * The only surface the UI uses to reach a backend. Swap the implementation in
- * `src/api/index.ts`; components never import fetch or mock data directly.
+ * The only surface the UI uses to reach the API. Components never call fetch directly.
  */
 export interface HeadnoteClient {
   getWorkspace(): Promise<Workspace>;
   ask(question: string, conversationId?: string): Promise<Answer>;
-  addDocuments(texts: string[]): Promise<{ added: number }>;
+  addDocuments(documents: NewDocument[]): Promise<{ added: number }>;
+  /** Earlier turns of a saved conversation, oldest first. */
+  getConversation(conversationId: string): Promise<Turn[]>;
 }

@@ -16,6 +16,10 @@ class Settings(BaseSettings):
     chroma_path: str | None = None
     chroma_collection: str = "headnote_docs"
 
+    # Comma-separated browser origins allowed to call the API cross-origin, for example
+    # "https://headnote.example.com". Leave empty when the web app proxies /api same-origin.
+    cors_origins: str = ""
+
     # LangSmith tracing is read from the standard env vars:
     # LANGSMITH_TRACING=true and LANGSMITH_API_KEY=...
 

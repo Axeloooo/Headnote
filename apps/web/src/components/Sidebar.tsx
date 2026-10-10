@@ -1,21 +1,28 @@
-import type { Collection } from "../api/types";
+import type { Collection, RecentChat } from "../api/types";
+import type { Route } from "../useRoute";
 import styles from "./Sidebar.module.css";
 import { Logo } from "./Logo";
-
-export type Route = "chat" | "library" | "empty";
 
 interface SidebarProps {
   route: Route;
   collections: Collection[];
-  recent: string[];
+  recent: RecentChat[];
+  libraryFailed?: boolean;
+  onNewChat: () => void;
 }
 
-export function Sidebar({ route, collections, recent }: SidebarProps) {
-  const link = (target: Route, label: string) => (
+export function Sidebar({
+  route,
+  collections,
+  recent,
+  libraryFailed = false,
+  onNewChat,
+}: SidebarProps) {
+  const link = (target: Route["name"], label: string) => (
     <a
       href={`#/${target}`}
       className={styles.link}
-      aria-current={route === target ? "page" : undefined}
+      aria-current={route.name === target && !route.conversationId ? "page" : undefined}
     >
       {label}
     </a>
@@ -26,6 +33,9 @@ export function Sidebar({ route, collections, recent }: SidebarProps) {
       <a href="#/chat" className={styles.brand} aria-label="Headnote home">
         <Logo />
       </a>
+      <button type="button" className="button button--quiet" onClick={onNewChat}>
+        New chat
+      </button>
       <nav aria-label="Main" className={styles.nav}>
         {link("chat", "Ask")}
         {link("library", "Library")}
@@ -34,7 +44,9 @@ export function Sidebar({ route, collections, recent }: SidebarProps) {
         <h2 id="side-collections" className={styles.heading}>
           Collections
         </h2>
-        {collections.length === 0 ? (
+        {libraryFailed ? (
+          <p className={styles.none}>Library unavailable</p>
+        ) : collections.length === 0 ? (
           <p className={styles.none}>No collections yet</p>
         ) : (
           <ul>
@@ -56,21 +68,19 @@ export function Sidebar({ route, collections, recent }: SidebarProps) {
           </h2>
           <ul>
             {recent.map((item) => (
-              <li key={item}>
-                <a href="#/chat" className={styles.row}>
-                  <span>{item}</span>
+              <li key={item.id}>
+                <a
+                  href={`#/chat/${item.id}`}
+                  className={styles.row}
+                  aria-current={route.conversationId === item.id ? "page" : undefined}
+                >
+                  <span>{item.title}</span>
                 </a>
               </li>
             ))}
           </ul>
         </section>
       )}
-      <nav aria-label="Template screens" className={styles.templates}>
-        <h2 className={styles.heading}>Template screens</h2>
-        <a href="#/chat">Chat</a>
-        <a href="#/library">Library</a>
-        <a href="#/empty">Empty state</a>
-      </nav>
     </aside>
   );
 }

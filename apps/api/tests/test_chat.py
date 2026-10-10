@@ -89,3 +89,62 @@ def test_unknown_conversation_returns_404(client):
 
 def test_empty_message_is_rejected(client):
     assert client.post("/chat", json={"message": ""}).status_code == 422
+
+
+def test_documents_are_listed_and_cited(client):
+    added = client.post(
+        "/documents",
+        json={
+            "documents": [
+                {
+                    "title": "Vendor contract",
+                    "text": "Either party may terminate on sixty days notice.\n\nNo fee.",
+                    "collection": "Contracts",
+                    "kind": "pdf",
+                }
+            ]
+        },
+    )
+    assert added.json() == {"added": 1}
+
+    listing = client.get("/documents").json()
+    assert [(d["title"], d["collection"], d["kind"], d["chunks"]) for d in listing] == [
+        ("Vendor contract", "Contracts", "pdf", 1)
+    ]
+
+    body = client.post("/chat", json={"message": "terminate on sixty days notice"}).json()
+    assert body["sources"][0]["document"] == "Vendor contract"
+    assert body["sources"][0]["id"] == "s1"
+    assert "sixty days" in body["sources"][0]["excerpt"]
+    assert body["elapsed_ms"] >= 0
+
+
+def test_bare_texts_still_work_and_get_a_title(client):
+    assert client.post("/documents", json={"texts": ["Plain note\nsecond line"]}).json() == {
+        "added": 1
+    }
+    assert client.get("/documents").json()[0]["title"] == "Plain note"
+
+
+def test_documents_request_must_not_be_empty(client):
+    assert client.post("/documents", json={}).status_code == 422
+
+
+def test_recent_conversations_are_listed_newest_first(client):
+    client.post("/chat", json={"message": "first question"})
+    client.post("/chat", json={"message": "second question"})
+    titles = [c["title"] for c in client.get("/conversations").json()]
+    assert titles == ["second question", "first question"]
+
+
+def test_cors_is_off_by_default_and_opt_in(tmp_path):
+    def build(name: str, origins: str):
+        settings = Settings(database_url=f"sqlite:///{tmp_path / name}.db", cors_origins=origins)
+        retriever = Retriever(collection_name=f"cors-{name}", embedding_function=KeywordEmbedding())
+        return TestClient(create_app(settings=settings, retriever=retriever))
+
+    headers = {"Origin": "https://app.example.com"}
+    closed = build("closed", "").get("/health", headers=headers)
+    assert "access-control-allow-origin" not in closed.headers
+    opened = build("open", "https://app.example.com").get("/health", headers=headers)
+    assert opened.headers["access-control-allow-origin"] == "https://app.example.com"

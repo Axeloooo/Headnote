@@ -27,12 +27,14 @@ Without `OPENAI_API_KEY` the app uses an offline echo model, so everything still
 
 ## API
 
-| Method | Path                           | Purpose                                                            |
-| ------ | ------------------------------ | ------------------------------------------------------------------ |
-| GET    | `/health`                      | Liveness check                                                     |
-| POST   | `/documents`                   | Add texts to the Chroma knowledge base                             |
-| POST   | `/chat`                        | Send a message; omit `conversation_id` to start a new conversation |
-| GET    | `/conversations/{id}/messages` | Read a conversation's history                                      |
+| Method | Path                           | Purpose                                                     |
+| ------ | ------------------------------ | ----------------------------------------------------------- |
+| GET    | `/health`                      | Liveness check                                              |
+| GET    | `/documents`                   | List saved documents                                        |
+| POST   | `/documents`                   | Save documents (`documents` with titles, or bare `texts`)   |
+| GET    | `/conversations`               | Recent conversations, newest first                          |
+| POST   | `/chat`                        | Send a message; returns `reply`, `sources` and `elapsed_ms` |
+| GET    | `/conversations/{id}/messages` | Read a conversation's history                               |
 
 ```bash
 curl -X POST localhost:8000/documents -H 'content-type: application/json' \
@@ -43,7 +45,33 @@ curl -X POST localhost:8000/chat -H 'content-type: application/json' \
 
 ## Web UI
 
-The UI lives in `apps/web` (Vite, React, TypeScript) under the product name Headnote. It runs on mock data until the API exposes sources and a document listing. See [apps/web/README.md](apps/web/README.md).
+The UI lives in `apps/web` (Vite, React, TypeScript). Every screen reads from `apps/api`: chat with
+source pills taken from the retrieved documents, a library of saved documents with upload, and saved
+conversations in the sidebar. See [apps/web/README.md](apps/web/README.md).
+
+```bash
+cd apps/api && uvicorn app.main:create_app --factory --reload   # terminal 1, port 8000
+cd apps/web && npm install && npm run dev                       # terminal 2, http://localhost:5173
+```
+
+## Deploy
+
+The whole stack runs from one command, and the pieces also deploy separately. Details and
+alternatives are in [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
+
+```bash
+docker compose up --build        # http://localhost:8080
+```
+
+| Variable           | Where      | When       | Purpose                                                              |
+| ------------------ | ---------- | ---------- | -------------------------------------------------------------------- |
+| `VITE_API_URL`     | `apps/web` | build time | API origin for a cross-origin deploy. Empty means same-origin `/api` |
+| `API_UPSTREAM`     | web image  | start      | Where nginx forwards `/api` (default `http://api:8000`)              |
+| `API_PROXY_TARGET` | `apps/web` | dev        | Where `vite` and `vite preview` forward `/api`                       |
+| `CORS_ORIGINS`     | `apps/api` | start      | Comma-separated origins allowed to call the API cross-origin         |
+| `OPENAI_API_KEY`   | `apps/api` | start      | Real model and embeddings. Empty uses the offline echo model         |
+| `DATABASE_URL`     | `apps/api` | start      | SQLAlchemy URL. Default is a local SQLite file                       |
+| `CHROMA_PATH`      | `apps/api` | start      | Directory for the persistent Chroma index. Empty keeps it in memory  |
 
 ## Tests
 
