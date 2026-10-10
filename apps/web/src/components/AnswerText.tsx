@@ -35,14 +35,15 @@ export function AnswerText({ answer }: { answer: Answer }) {
       )}
       <div className={styles.foot}>
         <span>
-          <b>{used === 1 ? "1 source" : `${used} sources`}</b> used
+          <b>{used === 0 ? "No sources" : used === 1 ? "1 source" : `${used} sources`}</b>
+          {used > 0 && " used"}
         </span>
         {answer.conflicts > 0 && (
           <span>
             <b>{answer.conflicts === 1 ? "1 conflict" : `${answer.conflicts} conflicts`}</b> shown
           </span>
         )}
-        <span>{(answer.elapsedMs / 1000).toFixed(1)} s</span>
+        {answer.elapsedMs > 0 && <span>{(answer.elapsedMs / 1000).toFixed(1)} s</span>}
       </div>
     </div>
   );

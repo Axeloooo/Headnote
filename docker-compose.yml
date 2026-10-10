@@ -1,0 +1,33 @@
+# Whole stack on one host: docker compose up --build, then open http://localhost:8080
+services:
+  api:
+    build: apps/api
+    environment:
+      DATABASE_URL: sqlite:////data/headnote.db
+      CHROMA_PATH: /data/chroma
+      # Without a key the API answers with an offline echo model.
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_MODEL: ${OPENAI_MODEL:-gpt-4o-mini}
+    volumes:
+      - headnote-data:/data
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request as u; u.urlopen('http://127.0.0.1:8000/health')",
+        ]
+      interval: 10s
+      retries: 6
+  web:
+    build: apps/web
+    environment:
+      API_UPSTREAM: http://api:8000
+    ports:
+      - "${WEB_PORT:-8080}:80"
+    depends_on:
+      api:
+        condition: service_healthy
+volumes:
+  headnote-data:
