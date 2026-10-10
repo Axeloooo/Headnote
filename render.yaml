@@ -1,0 +1,31 @@
+# Render Blueprint for the API: New > Blueprint in the Render dashboard, pick this repo.
+# Free plan: no card, sleeps after 15 idle minutes (first request then takes about a minute).
+services:
+  - type: web
+    name: headnote-api
+    runtime: docker
+    plan: free
+    branch: main
+    dockerfilePath: ./apps/api/Dockerfile
+    dockerContext: ./apps/api
+    healthCheckPath: /health
+    autoDeployTrigger: commit
+    envVars:
+      # Neon connection string, copied as given (postgresql://...?sslmode=require).
+      - key: DATABASE_URL
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: ANTHROPIC_MODEL
+        value: claude-haiku-5-5
+      # Rebuild the sample library on every start: the free disk is wiped when the service sleeps.
+      - key: SEED_DEMO_DOCUMENTS
+        value: "true"
+      - key: LANGSMITH_TRACING
+        value: "false"
+      - key: LANGSMITH_API_KEY
+        sync: false
+      - key: LANGSMITH_PROJECT
+        value: headnote
+      # CORS_ORIGINS is left out: the web app reaches the API through the /api rewrite. Add it in the
+      # dashboard only if the web app calls Render directly (see docs/DEPLOYMENT.md).

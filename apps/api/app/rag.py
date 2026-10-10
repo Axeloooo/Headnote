@@ -67,6 +67,9 @@ class Retriever:
         else:
             self._collection = client.get_or_create_collection(collection_name)
 
+    def count(self) -> int:
+        return int(self._collection.count())
+
     def add_documents(self, texts: list[str]) -> int:
         ids = [str(uuid.uuid4()) for _ in texts]
         self._collection.add(documents=texts, ids=ids)
